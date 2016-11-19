@@ -54,7 +54,7 @@ deploy:
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
     secret_access_key: $AWS_SECRET_KEY
-    bucket: sga-teambash-test
+    bucket: sga-teambash-test2
     key: TeamBash_stormDetection_test.zip
     bundle_type: zip
     application: TeamBash-Test2
@@ -66,7 +66,7 @@ deploy:
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
     secret_access_key: $AWS_SECRET_KEY
-    bucket: sga-teambash-test
+    bucket: sga-teambash-test3
     key: TeamBash_stormDetection_test.zip
     bundle_type: zip
     application: TeamBash-Test3
