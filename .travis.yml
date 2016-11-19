@@ -50,3 +50,27 @@ deploy:
     region: us-west-2
     on:
       branch: develop
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: sga-teambash-test
+    key: TeamBash_stormDetection_test.zip
+    bundle_type: zip
+    application: TeamBash-Test2
+    deployment_group: TeamBash-Test2
+    region: us-east-2
+    on:
+      branch: develop
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: sga-teambash-test
+    key: TeamBash_stormDetection_test.zip
+    bundle_type: zip
+    application: TeamBash-Test3
+    deployment_group: TeamBash-Test3
+    region: us-west-1
+    on:
+      branch: develop
