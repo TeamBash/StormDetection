@@ -20,8 +20,10 @@ before_script:
 
 script: nosetests
 
-before_deploy:
+after_success:
   - cd ../../../
+
+before_deploy:
   - zip -r TeamBash_stormDetection_test.zip core/python/stormDetection scripts appspec.yml Dockerfile || true
   - mkdir -p "stormDetection"
   - mv TeamBash_stormDetection_test.zip stormDetection/TeamBash_stormDetection_test.zip || true
