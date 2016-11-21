@@ -932,7 +932,46 @@ Simple Tables:<br>
         else:
             return '', 206
 
+def getValue(sId, ec2IP, path):
+    return json.dumps({"name": "stormDetection",
+                       "id": sId,
+                       "address": ec2IP,
+                       "port": 34000,
+                       "sslPort": None,
+                       "payload": None,
+                       "registrationTimeUTC": (datetime.utcnow() - datetime.utcfromtimestamp(0)).total_seconds(),
+                       "serviceType": "DYNAMIC",
+                       "uriSpec": {"parts": [{"value": path,
+                                              "variable": False }]}}, ensure_ascii=True).encode()
+
+def my_listener(state):
+    global ip
+    if state == KazooState.LOST:
+        zkIP = ip+":2181"
+        zk = KazooClient(hosts=zkIP)
+        zk.start()
+    elif state == KazooState.SUSPENDED:
+        print("Connection Suspended")
+    else:
+        print("Connection Error")
+
+def register():
+    try:
+        global ip
+        sId = str(uuid.uuid4())
+        zkIp = ip + ":2181"
+        zk = KazooClient(hosts=zkIp)
+        zk.start()
+        zk.add_listener(my_listener)
+        path = "http://" + ip + ":34000/getKml/noaa-nexrad-level2.s3.amazonaws.com/<yy>/<mm>/<dd>/<stationId>/<filename>.gz"
+        zk.create("/services/stormDetection/"+sId,getValue(sId, ip, path), ephemeral=True, makepath=True)
+    except KazooException as e:
+        print(e.__doc__)
+    logging.basicConfig()
+
 if __name__ == '__main__':
+    ip = requests.get("http://checkip.amazonaws.com/").text.split("\n")[0]
+    register()
     app.run(
         host="0.0.0.0",
         port=int(34000)
