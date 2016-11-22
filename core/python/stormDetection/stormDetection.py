@@ -948,7 +948,7 @@ def getValue(sId, ec2IP, path):
                        "registrationTimeUTC": (datetime.utcnow() - datetime.utcfromtimestamp(0)).total_seconds(),
                        "serviceType": "DYNAMIC",
                        "uriSpec": {"parts": [{"value": path,
-                                              "variable": False }]}}, ensure_ascii=True).encode()
+                                              "variable": True }]}}, ensure_ascii=True).encode()
 
 def my_listener(state):
     global ip
