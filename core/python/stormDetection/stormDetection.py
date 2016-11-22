@@ -1,21 +1,23 @@
-from flask import Flask
-import random,requests, json
-from kazoo.client import KazooState
-from kazoo.client import KazooClient
-from kazoo.exceptions import KazooException
-from datetime import datetime
-import uuid
+import json
 import logging
+import random
+import requests
+import uuid
+from datetime import datetime
+
+from flask import Flask
+from kazoo.client import KazooClient
+from kazoo.client import KazooState
+from kazoo.exceptions import KazooException
 
 app = Flask(__name__)
 
 
 @app.route('/getKml/noaa-nexrad-level2.s3.amazonaws.com/<yy>/<mm>/<dd>/<stationId>/<filename>.gz', methods=['GET'])
-@app.route('/getKml/https://noaa-nexrad-level2.s3.amazonaws.com/<yy>/<mm>/<dd>/<stationId>/<filename>.gz', methods=['GET'])
 def stormDetection(yy=None, mm=None, dd=None, stationId=None, filename=None):
     if yy and mm and dd and stationId and filename:
         url = 'https://noaa-nexrad-level2.s3.amazonaws.com/' + yy + '/' + mm + '/' + dd + '/' + stationId + '/' + filename + '.gz'
-        #data = read.urlopen(url).read()
+        # data = read.urlopen(url).read()
         flag = random.getrandbits(1)
         if flag:
             result = '''<?xml version="1.0" encoding="UTF-8"?>
@@ -938,6 +940,7 @@ Simple Tables:<br>
         else:
             return '', 206
 
+
 def getValue(sId, ec2IP, path):
     return json.dumps({"name": "stormDetection",
                        "id": sId,
@@ -948,18 +951,20 @@ def getValue(sId, ec2IP, path):
                        "registrationTimeUTC": (datetime.utcnow() - datetime.utcfromtimestamp(0)).total_seconds(),
                        "serviceType": "DYNAMIC",
                        "uriSpec": {"parts": [{"value": path,
-                                              "variable": True }]}}, ensure_ascii=True).encode()
+                                              "variable": True}]}}, ensure_ascii=True).encode()
+
 
 def my_listener(state):
     global ip
     if state == KazooState.LOST:
-        zkIP = ip+":2181"
+        zkIP = ip + ":2181"
         zk = KazooClient(hosts=zkIP)
         zk.start()
     elif state == KazooState.SUSPENDED:
         print("Connection Suspended")
     else:
         print("Connection Error")
+
 
 def register():
     try:
@@ -970,13 +975,15 @@ def register():
         zk.start()
         zk.add_listener(my_listener)
         path = "http://" + ip + ":34000/getKml/noaa-nexrad-level2.s3.amazonaws.com/<yy>/<mm>/<dd>/<stationId>/<filename>.gz"
-        zk.create("/services/stormDetection/"+sId,getValue(sId, ip, path), ephemeral=True, makepath=True)
+        zk.create("/services/stormDetection/" + sId, getValue(sId, ip, path), ephemeral=True, makepath=True)
     except KazooException as e:
         print(e.__doc__)
     logging.basicConfig()
 
+
 if __name__ == '__main__':
     ip = requests.get("http://checkip.amazonaws.com/").text.split("\n")[0]
+    #ip = "127.0.0.1"
     register()
     app.run(
         host="0.0.0.0",
