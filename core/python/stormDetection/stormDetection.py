@@ -974,7 +974,7 @@ def register():
         zk = KazooClient(hosts=zkIp)
         zk.start()
         zk.add_listener(my_listener)
-        path = "http://" + ip + ":34000/getKml/noaa-nexrad-level2.s3.amazonaws.com/<yy>/<mm>/<dd>/<stationId>/<filename>.gz"
+        path = "http://" + ip + ":34000/getKml/"
         zk.create("/services/stormDetection/" + sId, getValue(sId, ip, path), ephemeral=True, makepath=True)
     except KazooException as e:
         print(e.__doc__)
