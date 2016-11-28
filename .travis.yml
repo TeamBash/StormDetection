@@ -20,9 +20,11 @@ before_script:
 
 script: nosetests
 
-before_deploy:
+after_success:
   - cd ../../../
-  - zip -r TeamBash_stormDetection.zip core/python/stormDetection scripts appspec.yml Dockerfile || true
+
+before_deploy:
+  - zip -r TeamBash_stormDetection_test.zip core/python/stormDetection scripts appspec.yml Dockerfile || true
   - mkdir -p "stormDetection"
   - mv TeamBash_stormDetection.zip stormDetection/TeamBash_stormDetection.zip || true
 
@@ -30,9 +32,21 @@ deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
     secret_access_key: $AWS_SECRET_KEY
-    bucket: sga-teambash
+    bucket: sga-teambash-test2
     local_dir: stormDetection
-    region: us-west-2
+    region: us-east-2
+    skip_cleanup: true
+    acl: public_read
+    detect_encoding: true
+    on:
+      branch: master
+
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: sga-teambash-test3
+    local_dir: stormDetection
+    region: us-west-1
     skip_cleanup: true
     acl: public_read
     detect_encoding: true
@@ -42,11 +56,35 @@ deploy:
   - provider: codedeploy
     access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
     secret_access_key: $AWS_SECRET_KEY
-    bucket: sga-teambash
-    key: TeamBash_stormDetection.zip
+    bucket: sga-teambash-test2
+    key: TeamBash_stormDetection_test.zip
     bundle_type: zip
-    application: TeamBash-App
-    deployment_group: TeamBash-App
-    region: us-west-2
+    application: TeamBash-Test2
+    deployment_group: TeamBash-Test2
+    region: us-east-2
+    on:
+      branch: master
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: sga-teambash-test2
+    key: TeamBash_stormDetection_test.zip
+    bundle_type: zip
+    application: TeamBash-Test2
+    deployment_group: TeamBash-Test4
+    region: us-east-2
+    on:
+      branch: master
+
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: sga-teambash-test3
+    key: TeamBash_stormDetection_test.zip
+    bundle_type: zip
+    application: TeamBash-Test3
+    deployment_group: TeamBash-Test3
+    region: us-west-1
     on:
       branch: master
