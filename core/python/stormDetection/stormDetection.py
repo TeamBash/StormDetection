@@ -96,7 +96,7 @@ def register():
 
 if __name__ == '__main__':
     ip = requests.get("http://checkip.amazonaws.com/").text.split("\n")[0]
-    ip = "127.0.0.1"
+    #ip = "127.0.0.1"
     register()
     app.run(
         host="0.0.0.0",
