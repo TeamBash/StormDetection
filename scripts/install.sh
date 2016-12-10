@@ -7,7 +7,7 @@ cd stormDetection
 echo '===============Building docker===============' >> /var/log/sga-docker.log 2>&1
 docker build -t teambash/storm-detection-service:v1 . >> /var/log/sga-docker.log 2>&1
 echo '===============Running docker===============' >> /var/log/sga-docker.log 2>&1
-docker run -it --name storm-detection-service -p 34000:34000 -d teambash/storm-detection-service:v1
+docker run -it --name storm-detection-service -p 34000:34000 -d teambash/storm-detection-service:v1 >> /var/log/sga-docker.log 2>&1
 
 dangling_images="$(sudo docker images -f "dangling=true" -q)"
 if [ "$dangling_images" == "" ] ; then
