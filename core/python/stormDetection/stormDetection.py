@@ -17,11 +17,7 @@ app = Flask(__name__)
 def stormDetection(yy=None, mm=None, dd=None, stationId=None, filename=None):
     if yy and mm and dd and stationId and filename:
         url = 'https://noaa-nexrad-level2.s3.amazonaws.com/' + yy + '/' + mm + '/' + dd + '/' + stationId + '/' + filename + '.gz'
-        # data = read.urlopen(url).read()
-        #flag = random.getrandbits(1)
-        flag = True
-        if flag:
-            result = '''<?xml version="1.0" encoding="UTF-8"?>
+        result = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>KML Samples</name>
@@ -56,10 +52,7 @@ def stormDetection(yy=None, mm=None, dd=None, stationId=None, filename=None):
   </Document>
 </kml>
 '''
-            return result, 200
-        else:
-            return '', 206
-
+        return result, 200
 
 def getValue(sId, ec2IP, path):
     return json.dumps({"name": "stormDetection",
@@ -103,7 +96,7 @@ def register():
 
 if __name__ == '__main__':
     ip = requests.get("http://checkip.amazonaws.com/").text.split("\n")[0]
-    #ip = "127.0.0.1"
+    ip = "127.0.0.1"
     register()
     app.run(
         host="0.0.0.0",
