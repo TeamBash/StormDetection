@@ -26,7 +26,7 @@ after_success:
 before_deploy:
   - zip -r TeamBash_stormDetection_test.zip core/python/stormDetection scripts appspec.yml Dockerfile || true
   - mkdir -p "stormDetection"
-  - mv TeamBash_stormDetection.zip stormDetection/TeamBash_stormDetection.zip || true
+  - mv TeamBash_stormDetection_test.zip stormDetection/TeamBash_stormDetection_test.zip || true
 
 deploy:
   - provider: s3
